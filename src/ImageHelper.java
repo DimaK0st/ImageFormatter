@@ -89,6 +89,13 @@ public class ImageHelper {
         return op.filter(image, null);
     }
 
+    public int[] copyFromBufferedImage(BufferedImage img) {
+        int[] pict = new int[img.getHeight() * img.getWidth()];
+        for (int i = 0; i < img.getHeight(); i++)
+            for (int j = 0; j < img.getWidth(); j++)
+                pict[i * img.getWidth() + j] = img.getRGB(j, i) & 0xFFFFFF; // 0xFFFFFF: записываем только 3 младших байта RGB
+        return pict;
+    }
     public BufferedImage convertToBlackAndWhite(BufferedImage img) {
         int height = img.getHeight();
         int width = img.getWidth();
@@ -109,35 +116,10 @@ public class ImageHelper {
         return bi;
     }
 
-    public int[] copyFromBufferedImage(BufferedImage img) {
-        int[] pict = new int[img.getHeight() * img.getWidth()];
-        for (int i = 0; i < img.getHeight(); i++)
-            for (int j = 0; j < img.getWidth(); j++)
-                pict[i * img.getWidth() + j] = img.getRGB(j, i) & 0xFFFFFF; // 0xFFFFFF: записываем только 3 младших байта RGB
-        return pict;
-    }
-
     public void saveAsJpeg(File image, String type, BufferedImage buffImg) throws IOException {
         try {
             ImageIO.write(buffImg, "PNG", new File(image.getParent() + "\\" + type + "_" + image.getName()));
         } catch (IOException ignored) {
         }
     }
-
-//        ImageWriter writer = new JPEGImageWriter(new JPEGImageWriterSpi());
-//        saveToImageFile(writer, image , type, buffImg);
-//    }
-//
-//    // Запись изображения в png-формате (другие графические форматы по аналогии)
-//    public void saveAsPng(File image,  String type, BufferedImage buffImg) throws IOException {
-//        ImageWriter writer = new PNGImageWriter(new PNGImageWriterSpi());
-//        saveToImageFile(writer, image, type, buffImg);
-//    }
-//
-//    // Собственно запись файла (общая для всех форматов часть).
-//    private void saveToImageFile(ImageWriter iw, File image, String type, BufferedImage buffImg) throws IOException {
-//        iw.setOutput(new FileImageOutputStream(new File(image.getParent()+"/"+type+"_"+image.getName())));
-//        iw.write(buffImg);
-//        ((FileImageOutputStream) iw.getOutput()).close();
-//    }
 }
